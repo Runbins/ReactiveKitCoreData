@@ -22,24 +22,6 @@ public enum NSFetchedResultCollectionChangeOperation<Element : NSFetchRequestRes
     
     case deleteSection([Element], at: Index)
     case insertSection([Element], at: Index)
-
-//    public var asOrderedCollectionOperation: OrderedCollectionOperation<Element, Index> {
-//        switch self {
-//        case .insert(let element, at: let path):
-//            return .insert( element, at: path)
-//        case .delete(_, at: let path):
-//            return .delete(at: path)
-//        case .move(_, from: let orig, to: let dest):
-//            return .move(from: orig, to: dest)
-//        case .update(at: let path, newElement:let  element):
-//            return .update(at: path, newElement: element):
-//            
-//        case .deleteSection(_, at: let path):
-//            return .delete(at: path)
-//        case .insertSection(let objects, at: let path):
-//            return .delete(at: path)
-//        }
-//    }
 }
 
 open class NSFetchedResultCollectionChangeset<Element : NSFetchRequestResult> : SectionedDataSourceChangeset, SectionedDataSourceChangesetConvertible {

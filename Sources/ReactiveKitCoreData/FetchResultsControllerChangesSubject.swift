@@ -11,21 +11,13 @@ import CoreData
 import Bond
 import ReactiveKit
 
-//typealias DynamicCollectionUpdates<Object : NSFetchRequestResult> = Signal<NSFetchedResultCollectionChangeset<Object>, Never>
-
-
-open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>: Subject<NSFetchedResultCollectionChangeset<Element>, Never> { //Subject<OrderedCollectionDiff<IndexPath>, Never> {
-    
-    
-//    public let fetchController : NSFetchedResultsController<NSFetchRequestResult>
+open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>: Subject<NSFetchedResultCollectionChangeset<Element>, Never> {
     
     public let fetchedCollection : NSFetchedResultCollection<Element>
     
     private let controllerDelegate = _FetchControllerDelegate<Element>()
     
-    
     public init(_ controller: NSFetchedResultsController<Element>){
-//        fetchController = controller
         fetchedCollection = NSFetchedResultCollection(controller)
         
         super.init()
