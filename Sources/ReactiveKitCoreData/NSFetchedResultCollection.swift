@@ -13,10 +13,10 @@ open class NSFetchedResultCollection<Object : NSFetchRequestResult> : Collection
     public typealias Index = IndexPath
     public typealias Element = Object
 
-    public let fetchResultsController : NSFetchedResultsController<Object>
+    public let fetchResultController : NSFetchedResultsController<Object>
 
     public init(_ resultsController : NSFetchedResultsController<Object>) {
-        fetchResultsController = resultsController
+        fetchResultController = resultsController
     }
 
     public var startIndex: Index {
@@ -24,15 +24,15 @@ open class NSFetchedResultCollection<Object : NSFetchRequestResult> : Collection
     }
 
     public var endIndex: Index {
-        if fetchResultsController.fetchedObjects?.count ?? 0 == 0 {
+        if fetchResultController.fetchedObjects?.count ?? 0 == 0 {
             return startIndex
         } else {
-            return Index(row: 0, section: fetchResultsController.sections?.count ?? 0)
+            return Index(row: 0, section: fetchResultController.sections?.count ?? 0)
         }
     }
 
     public func index(after i: Index) -> Index {
-        if let sectionInfo = fetchResultsController.sections?[i.section] {
+        if let sectionInfo = fetchResultController.sections?[i.section] {
             if i.row + 1 < sectionInfo.numberOfObjects {
                 return Index(row: i.row + 1, section: i.section)
             } else {
@@ -44,10 +44,10 @@ open class NSFetchedResultCollection<Object : NSFetchRequestResult> : Collection
     }
 
     public subscript(position: Index) -> Object {
-        return fetchResultsController.object(at: position)
+        return fetchResultController.object(at: position)
     }
     
     public subscript(position: Int) -> Object {
-        return fetchResultsController.fetchedObjects[position]
+        return fetchResultController.fetchedObjects![position]
     }
 }

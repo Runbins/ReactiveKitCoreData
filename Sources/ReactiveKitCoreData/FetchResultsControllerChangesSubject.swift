@@ -11,76 +11,83 @@ import CoreData
 import Bond
 import ReactiveKit
 
-typealias DynamicCollectionUpdates<Object : NSFetchRequestResult> = Signal<NSFetchedResultCollectionChangeset<Object>, Never>
+//typealias DynamicCollectionUpdates<Object : NSFetchRequestResult> = Signal<NSFetchedResultCollectionChangeset<Object>, Never>
 
 
-open class FetchResultsControllerChangesSubject: Subject<OrderedCollectionDiff<IndexPath>, Never> {
-    
-    fileprivate class _FetchControllerDelegate : NSObject, NSFetchedResultsControllerDelegate{
-        fileprivate var currentEventChanges : OrderedCollectionDiff<IndexPath>? = nil
-        unowned var changesObserver : FetchResultsControllerChangesSubject!
-    }
-    
-    public let fetchController : NSFetchedResultsController<NSFetchRequestResult>
+open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>: Subject<NSFetchedResultCollectionChangeset<Element>, Never> { //Subject<OrderedCollectionDiff<IndexPath>, Never> {
     
     
-    private let controllerDelegate = _FetchControllerDelegate()
+//    public let fetchController : NSFetchedResultsController<NSFetchRequestResult>
+    
+    public let fetchedCollection : NSFetchedResultCollection<Element>
+    
+    private let controllerDelegate = _FetchControllerDelegate<Element>()
     
     
-    public init(_ controller: NSFetchedResultsController<NSFetchRequestResult>){
-        fetchController = controller
+    public init(_ controller: NSFetchedResultsController<Element>){
+//        fetchController = controller
+        fetchedCollection = NSFetchedResultCollection(controller)
         
         super.init()
         
         controllerDelegate.changesObserver = self
-        fetchController.delegate = controllerDelegate
+        fetchedCollection.fetchResultController.delegate = controllerDelegate
     }
 }
 
 
 
-extension FetchResultsControllerChangesSubject._FetchControllerDelegate  {
+fileprivate class _FetchControllerDelegate<Element : NSFetchRequestResult> : NSObject, NSFetchedResultsControllerDelegate{
+    fileprivate var currentEventChanges : [NSFetchedResultCollectionChangeOperation<Element>] = []
+    unowned var changesObserver : FetchResultsControllerChangesSubject<Element>!
     //MARK: - NSFetchedResultsControllerDelegate
     
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        currentEventChanges = OrderedCollectionDiff()
+    @objc func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        currentEventChanges = []
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        changesObserver.send(currentEventChanges!)
-        currentEventChanges = nil
+    @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        changesObserver.send(NSFetchedResultCollectionChangeset.init(collection: changesObserver.fetchedCollection,
+                                                                     patch: currentEventChanges))
+        
+        currentEventChanges = []
     }
     
+    @objc(controller:didChangeObject:atIndexPath:forChangeType:newIndexPath:)
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange anObject: Any,
                     at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType,
                     newIndexPath: IndexPath?) {
         
+        let object = anObject as! Element
+        
         switch type {
         case .delete:
-            currentEventChanges?.deletes.append(indexPath!)
+            currentEventChanges.append(.delete(object, at: indexPath!))
         case .insert:
-            currentEventChanges?.inserts.append(newIndexPath!)
+            currentEventChanges.append(.insert(object, at: newIndexPath!))
         case .update:
-            currentEventChanges?.updates.append(indexPath!)
+            currentEventChanges.append(.update(at: indexPath!, newElement: object))
         case .move:
-            currentEventChanges?.moves.append((from: indexPath!, to: newIndexPath!))
+            currentEventChanges.append(.move(object, from: indexPath!, to: newIndexPath!))
         @unknown default:
             break
         }
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    @objc(controller:didChangeSection:atIndex:forChangeType:) func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange sectionInfo: NSFetchedResultsSectionInfo,
                     atSectionIndex sectionIndex: Int,
                     for type: NSFetchedResultsChangeType) {
 
+        let objects = sectionInfo.objects as? [Element]
+        
         switch type {
         case .delete:
-            currentEventChanges?.deletes.append(IndexPath(index: sectionIndex))
+            currentEventChanges.append(.deleteSection(objects ?? [], at: IndexPath(index: sectionIndex)))
         case .insert:
-            currentEventChanges?.inserts.append(IndexPath(index: sectionIndex))
+            currentEventChanges.append(.insertSection(objects ?? [], at: IndexPath(index: sectionIndex)))
         default:
             break
         }
