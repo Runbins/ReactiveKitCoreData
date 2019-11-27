@@ -30,7 +30,7 @@ open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>:
 
 
 fileprivate class _FetchControllerDelegate<Element : NSFetchRequestResult> : NSObject, NSFetchedResultsControllerDelegate{
-    fileprivate var currentEventChanges : [NSFetchedResultCollectionChangeOperation<Element>] = []
+    fileprivate var currentEventChanges : [SectionedCollectionChangeOperation<Element>] = []
     unowned var changesObserver : FetchResultsControllerChangesSubject<Element>!
     //MARK: - NSFetchedResultsControllerDelegate
     

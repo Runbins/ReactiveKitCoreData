@@ -12,7 +12,7 @@ import ReactiveKit
 import Bond
 
 
-public enum NSFetchedResultCollectionChangeOperation<Element : NSFetchRequestResult>  {
+public enum SectionedCollectionChangeOperation<Element>  {
     public typealias Index = IndexPath
     
     case insert(Element, at: Index)
@@ -27,7 +27,7 @@ public enum NSFetchedResultCollectionChangeOperation<Element : NSFetchRequestRes
 open class NSFetchedResultCollectionChangeset<Element : NSFetchRequestResult> : SectionedDataSourceChangeset, SectionedDataSourceChangesetConvertible {
     public typealias Changeset = NSFetchedResultCollectionChangeset<Element>
     
-    public typealias Operation = NSFetchedResultCollectionChangeOperation<Element>
+    public typealias Operation = SectionedCollectionChangeOperation<Element>
     public typealias Diff = OrderedCollectionDiff<IndexPath>
     public typealias Collection = NSFetchedResultCollection<Element>
 
