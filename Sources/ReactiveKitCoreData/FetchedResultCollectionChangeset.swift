@@ -11,7 +11,7 @@ import CoreData
 import ReactiveKit
 import Bond
 
-
+///Operation that describes what object was modified and at what position in 2 level collection
 public enum SectionedCollectionChangeOperation<Element>  {
     public typealias Index = IndexPath
     
@@ -24,23 +24,24 @@ public enum SectionedCollectionChangeOperation<Element>  {
     case insertSection([Element], at: Index)
 }
 
-open class NSFetchedResultCollectionChangeset<Element : NSFetchRequestResult> : SectionedDataSourceChangeset, SectionedDataSourceChangesetConvertible {
-    public typealias Changeset = NSFetchedResultCollectionChangeset<Element>
+///Changesset to be used in observing FetchedResultCollection changes
+open class FetchedResultCollectionChangeset<Element : NSFetchRequestResult> : SectionedDataSourceChangeset, SectionedDataSourceChangesetConvertible {
+    public typealias Changeset = FetchedResultCollectionChangeset<Element>
     
     public typealias Operation = SectionedCollectionChangeOperation<Element>
     public typealias Diff = OrderedCollectionDiff<IndexPath>
-    public typealias Collection = NSFetchedResultCollection<Element>
+    public typealias Collection = FetchedResultCollection<Element>
 
     public var diff: Diff
     public var patch: [Operation]
     public var collection: Collection
     
-    public var asSectionedDataSourceChangeset: NSFetchedResultCollectionChangeset<Element> {
+    public var asSectionedDataSourceChangeset: FetchedResultCollectionChangeset<Element> {
         return self
     }
     
     public required init(collection: Collection,
-                         patch: [Operation]) {
+                         patch: [Operation] = []) {
         self.collection = collection
         diff = patch.reduce(into: Diff()) { (diff, operation) in
             switch operation {
@@ -68,7 +69,7 @@ open class NSFetchedResultCollectionChangeset<Element : NSFetchRequestResult> : 
     }
 }
 
-extension NSFetchedResultCollection : SectionedDataSourceProtocol {
+extension FetchedResultCollection : SectionedDataSourceProtocol {
     public var numberOfSections: Int {
         return fetchResultController.sections?.count ?? 0
     }
@@ -78,7 +79,7 @@ extension NSFetchedResultCollection : SectionedDataSourceProtocol {
     }
 }
 
-extension NSFetchedResultCollection : QueryableSectionedDataSourceProtocol {
+extension FetchedResultCollection : QueryableSectionedDataSourceProtocol {
     public typealias Item = Object
 
     public func item(at indexPath: IndexPath) -> Object {

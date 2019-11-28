@@ -11,14 +11,15 @@ import CoreData
 import Bond
 import ReactiveKit
 
-open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>: Subject<NSFetchedResultCollectionChangeset<Element>, Never> {
+///Objects of this class replaces the delegate of given NSFetchedResultsController, but still exposes it through the FetchedResultCollection adapter instance. Subscribe to it to get the updates of the underlying NSFetchedResultsController
+open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>: Subject<FetchedResultCollectionChangeset<Element>, Never> {
     
-    public let fetchedCollection : NSFetchedResultCollection<Element>
+    public let fetchedCollection : FetchedResultCollection<Element>
     
     private let controllerDelegate = _FetchControllerDelegate<Element>()
     
     public init(_ controller: NSFetchedResultsController<Element>){
-        fetchedCollection = NSFetchedResultCollection(controller)
+        fetchedCollection = FetchedResultCollection(controller)
         
         super.init()
         
@@ -39,7 +40,7 @@ fileprivate class _FetchControllerDelegate<Element : NSFetchRequestResult> : NSO
     }
     
     @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        changesObserver.send(NSFetchedResultCollectionChangeset.init(collection: changesObserver.fetchedCollection,
+        changesObserver.send(FetchedResultCollectionChangeset.init(collection: changesObserver.fetchedCollection,
                                                                      patch: currentEventChanges))
         
         currentEventChanges = []

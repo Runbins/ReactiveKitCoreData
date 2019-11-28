@@ -9,7 +9,10 @@
 import CoreData
 import Foundation
 
-open class NSFetchedResultCollection<Object : NSFetchRequestResult> : Collection {
+
+///Adapter for fetchResultController to be used as a Swift Collection
+///- Warning: since it is merely an adapter, all the CoreData threading rules are still applied. This also means that it cannot detect changes in underlying result controller.
+open class FetchedResultCollection<Object : NSFetchRequestResult> : Collection {
     public typealias Index = IndexPath
     public typealias Element = Object
 
