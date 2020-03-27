@@ -22,6 +22,10 @@ open class FetchedResultCollection<Object : NSFetchRequestResult> : Collection {
         fetchResultController = resultsController
     }
 
+    public var count: Int {
+        return fetchResultController.fetchedObjects?.count ?? 0
+    }
+    
     public var startIndex: Index {
         return Index(row: 0, section: 0)
     }
@@ -30,7 +34,7 @@ open class FetchedResultCollection<Object : NSFetchRequestResult> : Collection {
         if fetchResultController.fetchedObjects?.count ?? 0 == 0 {
             return startIndex
         } else {
-            return Index(row: 0, section: fetchResultController.sections?.count ?? 0)
+            return Index(row: 0, section: fetchResultController.sections?.count ?? 0) //End index is defined as first row of section after the last one
         }
     }
 

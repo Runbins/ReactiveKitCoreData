@@ -28,8 +28,6 @@ open class FetchResultsControllerChangesSubject<Element : NSFetchRequestResult>:
     }
 }
 
-
-
 fileprivate class _FetchControllerDelegate<Element : NSFetchRequestResult> : NSObject, NSFetchedResultsControllerDelegate{
     fileprivate var currentEventChanges : [SectionedCollectionChangeOperation<Element>] = []
     unowned var changesObserver : FetchResultsControllerChangesSubject<Element>!
@@ -40,8 +38,8 @@ fileprivate class _FetchControllerDelegate<Element : NSFetchRequestResult> : NSO
     }
     
     @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        changesObserver.send(FetchedResultCollectionChangeset.init(collection: changesObserver.fetchedCollection,
-                                                                     patch: currentEventChanges))
+        changesObserver.send(FetchedResultCollectionChangeset(collection: changesObserver.fetchedCollection,
+                                                              patch: currentEventChanges))
         
         currentEventChanges = []
     }
