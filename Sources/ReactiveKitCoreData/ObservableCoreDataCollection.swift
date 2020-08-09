@@ -10,9 +10,9 @@ import CoreData
 
 import ReactiveKit
 
-typealias ObservableCoreDataCollection<O: NSFetchRequestResult> = AnyProperty<FetchedResultCollectionChangeset<O>>
+public typealias ObservableCoreDataCollection<O: NSFetchRequestResult> = AnyProperty<FetchedResultCollectionChangeset<O>>
 
-extension AnyProperty {
+public extension AnyProperty {
     convenience init<Obj : NSFetchRequestResult>(fetchController: NSFetchedResultsController<Obj>) where Value == FetchedResultCollectionChangeset<Obj> {
         let s = FetchResultsControllerChangesSubject(fetchController)
         let initialV = FetchedResultCollectionChangeset(collection: s.fetchedCollection)

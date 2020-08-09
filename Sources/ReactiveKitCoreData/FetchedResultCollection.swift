@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import UIKit
 
 
 ///Adapter for fetchResultController to be used as a Swift Collection
