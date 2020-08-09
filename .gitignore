@@ -95,4 +95,9 @@ iOSInjectionProject/
 /Packages
 /*.xcodeproj
 xcuserdata/
+<<<<<<< HEAD
 >>>>>>> 66e3396... Initial Commit
+=======
+ReactiveKitCoreData.xcscheme
+Package.resolved
+>>>>>>> 6ba2cbf... Added some ingores
