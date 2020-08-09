@@ -37,10 +37,6 @@ class ObservableCoreDataCollectionSpec : QuickSpec {
             return observedCollection.value.collection
         }
         
-        let tb = UITableView(frame: .zero)
-        observedCollection.bind(to: tb, cellType: UITableViewCell.self){ cell, empl in
-            
-        }
         
         describe("observable core data collection"){
             afterEach {

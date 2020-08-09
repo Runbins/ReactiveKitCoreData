@@ -36,7 +36,7 @@ class FetchedResultsCollectionSpec : QuickSpec {
                     return le.department! < re.department!
                 }
             
-                var fetchedCollection : FetchedResultCollection<SimpleModel.Employee> = collection(sortedBy: "department", groupedBy: "department")
+                let fetchedCollection : FetchedResultCollection<SimpleModel.Employee> = collection(sortedBy: "department", groupedBy: "department")
                 
                 it("contains \(noe) sections"){
                     expect(fetchedCollection.numberOfSections) == noe
@@ -50,7 +50,7 @@ class FetchedResultsCollectionSpec : QuickSpec {
                 it("arranged the same as employees"){
                     expect({
                         for (idx, employee) in employees.enumerated() {
-                            guard let idxPath = fetchedCollection.index(of: employee) else {
+                            guard let idxPath = fetchedCollection.firstIndex(of: employee) else {
                                 return .failed(reason: "No \(employee) in fetched collection (original index \(idx)")
                             }
                             
