@@ -15,25 +15,25 @@ let starsRequest =  NSFetchRequest<Star>(entityName: Star.entity().name!)
 starsRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Star.name, ascending: true)] //Don't forget this or the runtime will not be happy
 
 let controller = NSFetchedResultsController(fetchRequest: starsRequest,
-managedObjectContext:<#viewContext#><##>,  
-sectionNameKeyPath: nil,
-cacheName: nil) 
+                                            managedObjectContext:<#viewContext#>,  
+                                            sectionNameKeyPath: nil,
+                                            cacheName: nil) 
 
 //Now to the interesting part
 let observabaleStarsCollection = ObservableCoreDataCollection(fetchController : controller)
 
 //And do the binding
 observabaleStarsCollection.bind(to: <#tableView#>,
-cellType: <#Star cell#>)
+                                cellType: <#Star cell#>)
 { (cell, star) in
-<#Show the star#>
+    <#Show the star#>
 }
 
 //Don't forget to execute request
 do {
     try controller.performFetch()
 } catch (error){
-<#Handle error#>
+    <#Handle error#>
 }
 ```
 After this any and all changes that affect your fetched collection will be immidiatly reflexed in the table view.
